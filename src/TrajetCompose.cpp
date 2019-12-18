@@ -11,8 +11,8 @@ e-mail               : charles.javerliat@insa-lyon.fr, pierre.sibut-bourde@insa-
 //---------------------------------------------------------------- INCLUDE
 
 //-------------------------------------------------------- Include système
-using namespace std;
 #include <iostream>
+using namespace std;
 #include <string.h>
 
 //------------------------------------------------------ Include personnel
@@ -160,6 +160,24 @@ const char* TrajetCompose::getVilleArrivee() const
   {
     return dernierMaillon->getTrajet()->getVilleArrivee();
   }
+}
+
+void TrajetCompose::sauvegarde(ostream &unFichier) const
+{
+    if(!estVide())
+    {
+        MaillonListeChaineeTrajets* maillonAct = premierMaillon;
+
+        unFichier << "<>" << endl;
+
+        while(maillonAct != nullptr)
+        {
+            maillonAct->getTrajet()->sauvegarde(unFichier);
+            maillonAct=maillonAct->getMaillonSuivant();
+        }
+
+        unFichier << "</>" <<endl;
+    }
 }
 
 //-------------------------------------------- Constructeurs - destructeur

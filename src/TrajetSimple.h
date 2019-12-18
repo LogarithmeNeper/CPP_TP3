@@ -60,6 +60,8 @@ public:
 
   const char* getVilleArrivee() const override;
 
+  void sauvegarde(ostream & unFichier) const override;
+
   //-------------------------------------------- Constructeurs - destructeur
 
   TrajetSimple ( const char* uneVilleDepart, const char* uneVilleArrivee, const char* unTypeTransport );

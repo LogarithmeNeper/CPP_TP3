@@ -12,8 +12,8 @@ e-mail               : charles.javerliat@insa-lyon.fr, pierre.sibut-bourde@insa-
 //---------------------------------------------------------------- INCLUDE
 
 //-------------------------------------------------------- Include système
-using namespace std;
 #include <iostream>
+using namespace std;
 #include <cstring>
 
 //------------------------------------------------------ Include personnel
@@ -85,6 +85,11 @@ const char* TrajetSimple::getVilleDepart() const
 const char* TrajetSimple::getVilleArrivee() const
 {
   return villeArrivee;
+}
+
+void TrajetSimple::sauvegarde(ostream &unFichier) const
+{
+    unFichier << villeDepart << "\t" << villeArrivee << "\t" << typeTransport << endl;
 }
 
 //-------------------------------------------- Constructeurs - destructeur
