@@ -56,6 +56,12 @@ public:
   // Contrat : Spécifique au type de trajet (Cf. TrajetSimple et TrajetCompose)
   //
 
+  virtual void sauvegarde(ostream & unFichier) const = 0;
+  // Mode d'emploi : Écrit dans le fichier unFichier les attributs du trajet
+  //
+  // Contrat : Spécifique au type de trajet (Cf. TrajetSimple et TrajetCompose)
+  //
+
   unsigned int getIndice() const;
   // Mode d'emploi : Renvoie l'indice du trajet dans le catalogue
 

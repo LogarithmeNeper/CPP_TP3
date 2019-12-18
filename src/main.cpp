@@ -13,6 +13,7 @@ e-mail               : charles.javerliat@insa-lyon.fr, pierre.sibut-bourde@insa-
 
 #include <string.h>
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 //------------------------------------------------------ Include personnel
@@ -284,6 +285,64 @@ static void rechercheTrajetAvancee(Catalogue & catalogue)
   cout << endl << endl << " ==  FIN DE RECHERCHE DE TRAJET AVANCEE == " << endl << endl;
 }
 
+static void chargement(Catalogue & catalogue)
+{
+    string nomFichier;
+    cout << "Veuillez entrer un nom de fichier: ";
+    cin >> nomFichier;
+
+    ofstream fichier("data/"+nomFichier, ios::in);
+
+    if (fichier.is_open())
+    {
+
+    } else {
+        cout << "Impossible d'ouvrir le fichier." << endl;
+    }
+    
+    fichier.close();
+}
+
+static void sauvegarde(const Catalogue & catalogue)
+{
+    string nomFichier;
+    cout << "Veuillez entrer un nom de fichier: ";
+    cin >> nomFichier;
+
+    ofstream fichier("data/"+nomFichier, ios::out);
+
+    if (fichier.is_open())
+    {
+        if(!catalogue.estVide())
+        {
+            MaillonListeChaineeTrajets* maillonAct = catalogue.getPremierMaillon();
+
+            while(maillonAct != nullptr)
+            {
+                Trajet* trajet = maillonAct->getTrajet();
+                trajet->sauvegarde(fichier);
+                //if(maillonAct->getMaillonSuivant() != nullptr)
+                //{
+                //    fichier << endl;
+                //}
+
+                maillonAct = maillonAct->getMaillonSuivant();
+            }
+        }
+        else
+        {
+            cout << "Le catalogue est vide, rien à faire." << endl;
+        }
+   }
+    else
+    {
+        cout << "Impossible d'ouvrir le fichier." << endl;
+    }
+    
+
+    fichier.close(); 
+}
+
 int main(void)
 {
   //Instance unique du Catalogue sur la pile
@@ -302,21 +361,23 @@ int main(void)
     cout << "\t4 - Supprimer un trajet" << endl;
     cout << "\t5 - Recherche de trajet simple" << endl;
     cout << "\t6 - Recherche de trajet avancée" << endl;
-    cout << "\t7 - Quitter" << endl;
+    cout << "\t7 - Chargement d'un catalogue" << endl;
+    cout << "\t8 - Sauvegarde d'un catalogue" << endl;
+    cout << "\t9 - Quitter" << endl;
 
     //Prompt de l'action à effectuer sur la Catalogue
     do {
       cout << "Entrez votre choix: ";
       cin >> choix;
 
-      if(cin.fail() || choix < 1 || choix > 7) {
+      if(cin.fail() || choix < 1 || choix > 9) {
         cout << "Choix invalide." << endl;
         cin.clear();
       }
 
       cin.ignore(10000, '\n');
 
-    } while(choix < 1 || choix > 7);
+    } while(choix < 1 || choix > 9);
 
     switch(choix) {
 
@@ -338,11 +399,17 @@ int main(void)
       case 6:
       rechercheTrajetAvancee(catalogue);
       break;
+      case 7:
+      chargement(catalogue);
+      break;
+      case 8:
+      sauvegarde(catalogue);
+      break;
       default:
       break;
     }
 
-  } while(choix != 7);
+  } while(choix != 9);
 
   cout << endl << " === FERMETURE DU PROGRAMME === " << endl;
 
