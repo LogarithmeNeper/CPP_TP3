@@ -168,7 +168,7 @@ void TrajetCompose::sauvegarde(ostream &unFichier) const
     {
         MaillonListeChaineeTrajets* maillonAct = premierMaillon;
 
-        unFichier << "<>" << endl;
+        unFichier << endl;
 
         while(maillonAct != nullptr)
         {
@@ -176,7 +176,7 @@ void TrajetCompose::sauvegarde(ostream &unFichier) const
             maillonAct=maillonAct->getMaillonSuivant();
         }
 
-        unFichier << "</>" <<endl;
+        unFichier << endl;
     }
 }
 

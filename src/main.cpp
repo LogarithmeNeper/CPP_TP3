@@ -291,12 +291,56 @@ static void chargement(Catalogue & catalogue)
     cout << "Veuillez entrer un nom de fichier: ";
     cin >> nomFichier;
 
-    ofstream fichier("data/"+nomFichier, ios::in);
+    ifstream fichier("data/"+nomFichier, ios::in);
 
     if (fichier.is_open())
     {
+        string line;
+        string villeDep;
+        string villeArr;
+        string moyTransport;
 
-    } else {
+        bool estTrajetCompose=false;
+        TrajetCompose* trajcmp;
+
+        while(!fichier.eof())
+        {
+            getline(fichier, line, '\n');
+            if(line == "")
+            {
+                if (!estTrajetCompose)
+                {
+                    trajcmp = new TrajetCompose();
+                } else {
+                    catalogue.ajouter(trajcmp);
+                }
+                estTrajetCompose=!estTrajetCompose;
+            }
+            else
+            {
+                if(!estTrajetCompose)
+                {
+                    villeDep=line;
+                    getline(fichier, villeArr, '\n');
+                    getline(fichier, moyTransport, '\n');
+                    TrajetSimple* trajet = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
+                    catalogue.ajouter(trajet);
+                }
+                else
+                {
+                    villeDep=line;
+                    getline(fichier, villeArr, '\n');
+                    getline(fichier, moyTransport, '\n');
+                    TrajetSimple* trajet = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
+                    trajcmp->ajouter(trajet);
+                }
+                
+            }
+        }
+
+    }
+    else
+    {
         cout << "Impossible d'ouvrir le fichier." << endl;
     }
     
@@ -306,15 +350,16 @@ static void chargement(Catalogue & catalogue)
 static void sauvegarde(const Catalogue & catalogue)
 {
     string nomFichier;
-    cout << "Veuillez entrer un nom de fichier: ";
-    cin >> nomFichier;
-
-    ofstream fichier("data/"+nomFichier, ios::out);
-
-    if (fichier.is_open())
+    if(!catalogue.estVide())
     {
-        if(!catalogue.estVide())
+        cout << "Veuillez entrer un nom de fichier: ";
+        cin >> nomFichier;
+
+        ofstream fichier("data/"+nomFichier, ios::out);
+
+        if (fichier.is_open())
         {
+        
             MaillonListeChaineeTrajets* maillonAct = catalogue.getPremierMaillon();
 
             while(maillonAct != nullptr)
@@ -328,19 +373,21 @@ static void sauvegarde(const Catalogue & catalogue)
 
                 maillonAct = maillonAct->getMaillonSuivant();
             }
+            fichier.close(); 
         }
         else
         {
-            cout << "Le catalogue est vide, rien à faire." << endl;
+            cout << "Impossible d'ouvrir le fichier." << endl;
         }
-   }
+        
+    }
     else
     {
-        cout << "Impossible d'ouvrir le fichier." << endl;
+        cout << "Le catalogue est vide, rien à faire." << endl;
     }
-    
+   
 
-    fichier.close(); 
+   
 }
 
 int main(void)
