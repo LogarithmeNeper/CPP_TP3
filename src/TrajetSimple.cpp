@@ -89,7 +89,9 @@ const char* TrajetSimple::getVilleArrivee() const
 
 void TrajetSimple::sauvegarde(ostream &unFichier) const
 {
-    unFichier << villeDepart << "\t" << villeArrivee << "\t" << typeTransport << endl;
+    unFichier << villeDepart << endl;
+    unFichier << villeArrivee << endl;
+    unFichier << typeTransport << endl;
 }
 
 //-------------------------------------------- Constructeurs - destructeur
