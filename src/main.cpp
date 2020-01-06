@@ -304,8 +304,9 @@ static void chargement(Catalogue & catalogue)
         string villeArr;
         string moyTransport;
 
-        bool estTrajetCompose=false;
+        bool estTrajetCompose = false;
         TrajetCompose* trajcmp;
+        TrajetSimple* trajsmp;
 
         while(!fichier.eof())
         {
@@ -319,26 +320,26 @@ static void chargement(Catalogue & catalogue)
                     catalogue.ajouter(trajcmp);
                     ++trajetsCharges;
                 }
-                estTrajetCompose=!estTrajetCompose;
+                estTrajetCompose = !estTrajetCompose;
             }
             else
             {
                 if(!estTrajetCompose)
                 {
-                    villeDep=line;
+                    villeDep = line;
                     getline(fichier, villeArr, '\n');
                     getline(fichier, moyTransport, '\n');
-                    TrajetSimple* trajet = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
-                    catalogue.ajouter(trajet);
+                    trajsmp = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
+                    catalogue.ajouter(trajsmp);
                     ++trajetsCharges;
                 }
                 else
                 {
-                    villeDep=line;
+                    villeDep = line;
                     getline(fichier, villeArr, '\n');
                     getline(fichier, moyTransport, '\n');
-                    TrajetSimple* trajet = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
-                    trajcmp->ajouter(trajet);
+                    trajsmp = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
+                    trajcmp->ajouter(trajsmp);
                 }
                 
             }
@@ -440,7 +441,7 @@ static void sauvegardeMenu(const Catalogue & catalogue) {
 
                 unsigned int i = 0;
                 MaillonListeChaineeTrajets* maillonAct = catalogue.getPremierMaillon();
-                while(maillonAct != nullptr)
+                while (maillonAct != nullptr)
                 {
                     if (maillonAct->getTrajet()->getTypeTrajet() == typeTrajet)
                     {
@@ -458,13 +459,13 @@ static void sauvegardeMenu(const Catalogue & catalogue) {
                 // choisir la ville de départ ET/OU la ville d'arrivée.
                 // Ici, les deux champs sont obligatoires.
                 cout << "Ville de départ: ";
-                cin >> villeDepart;
+                getline(cin, villeDepart, '\n');
                 cout << "Ville d'arrivée: ";
-                cin >> villeArrivee;
+                getline(cin, villeArrivee, '\n');
 
                 unsigned int i = 0;
                 MaillonListeChaineeTrajets* maillonAct = catalogue.getPremierMaillon();
-                while(maillonAct != nullptr)
+                while (maillonAct != nullptr)
                 {
                     if (maillonAct->getTrajet()->getVilleDepart() == villeDepart
                      && maillonAct->getTrajet()->getVilleArrivee() == villeArrivee)
