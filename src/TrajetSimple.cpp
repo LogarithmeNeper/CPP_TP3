@@ -87,6 +87,11 @@ const char* TrajetSimple::getVilleArrivee() const
   return villeArrivee;
 }
 
+char TrajetSimple::getTypeTrajet() const
+{
+    return 'S';
+}
+
 void TrajetSimple::sauvegarde(ostream &unFichier) const
 {
     unFichier << villeDepart << endl;

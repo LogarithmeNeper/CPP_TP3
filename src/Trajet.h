@@ -62,6 +62,13 @@ public:
   // Contrat : Spécifique au type de trajet (Cf. TrajetSimple et TrajetCompose)
   //
 
+  virtual char getTypeTrajet() const = 0;
+  // Mode d'emploi : Renvoi le type du trajet
+  //    - 'S' pour un trajet simple
+  //    - 'C' pour un trajet composé
+  //
+  // Contrat : Spécifique au type de trajet (Cf. TrajetSimple et TrajetCompose)
+
   unsigned int getIndice() const;
   // Mode d'emploi : Renvoie l'indice du trajet dans le catalogue
 
@@ -75,7 +82,7 @@ public:
 
   Trajet();
 
-  virtual ~Trajet( );
+  virtual ~Trajet();
 
   //------------------------------------------------------------------ PRIVE
 

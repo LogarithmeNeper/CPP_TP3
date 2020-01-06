@@ -287,6 +287,10 @@ static void rechercheTrajetAvancee(Catalogue & catalogue)
 
 static void chargement(Catalogue & catalogue)
 {
+    cout << endl << " ======= CHARGEMENT =======" << endl << endl;
+
+    int trajetsCharges = 0;
+
     string nomFichier;
     cout << "Veuillez entrer un nom de fichier: ";
     cin >> nomFichier;
@@ -313,6 +317,7 @@ static void chargement(Catalogue & catalogue)
                     trajcmp = new TrajetCompose();
                 } else {
                     catalogue.ajouter(trajcmp);
+                    ++trajetsCharges;
                 }
                 estTrajetCompose=!estTrajetCompose;
             }
@@ -325,6 +330,7 @@ static void chargement(Catalogue & catalogue)
                     getline(fichier, moyTransport, '\n');
                     TrajetSimple* trajet = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
                     catalogue.ajouter(trajet);
+                    ++trajetsCharges;
                 }
                 else
                 {
@@ -337,7 +343,6 @@ static void chargement(Catalogue & catalogue)
                 
             }
         }
-
     }
     else
     {
@@ -345,13 +350,24 @@ static void chargement(Catalogue & catalogue)
     }
     
     fichier.close();
+
+    cout << trajetsCharges << " trajet(s) chargé(s)." << endl;
+    cout << endl << " ===== FIN CHARGEMENT =====" << endl << endl;
 }
 
-static void sauvegarde(const Catalogue & catalogue)
+static void sauvegarde(const Catalogue & catalogue, const unsigned int* indices, const unsigned int & taille)
 {
-    string nomFichier;
-    if(!catalogue.estVide())
+    if (catalogue.estVide())
     {
+        cout << "Le catalogue est vide, rien à faire." << endl;
+    }
+    else if (taille == 0)
+    {
+        cout << "Il n'y a aucun trajet à sauvegarder." << endl;
+    }
+    else
+    {
+        string nomFichier;
         cout << "Veuillez entrer un nom de fichier: ";
         cin >> nomFichier;
 
@@ -359,38 +375,131 @@ static void sauvegarde(const Catalogue & catalogue)
 
         if (fichier.is_open())
         {
-        
-            MaillonListeChaineeTrajets* maillonAct = catalogue.getPremierMaillon();
-
-            while(maillonAct != nullptr)
+            cout << "Taille: " << taille << endl;
+            for (unsigned int i=0; i<taille; ++i)
             {
+                MaillonListeChaineeTrajets* maillonAct = catalogue.get(indices[i]);
                 Trajet* trajet = maillonAct->getTrajet();
                 trajet->sauvegarde(fichier);
-                //if(maillonAct->getMaillonSuivant() != nullptr)
-                //{
-                //    fichier << endl;
-                //}
-
-                maillonAct = maillonAct->getMaillonSuivant();
             }
-            fichier.close(); 
+            fichier.close();
+            cout << "Sauvegarde terminée (data/" << nomFichier << ")." << endl;
         }
-        else
-        {
-            cout << "Impossible d'ouvrir le fichier." << endl;
-        }
-        
+        else cout << "Impossible d'ouvrir le fichier." << endl;
     }
-    else
-    {
-        cout << "Le catalogue est vide, rien à faire." << endl;
-    }
-   
 
-   
+    cout << endl << " ===== FIN SAUVEGARDE =====" << endl << endl;
 }
 
-int main(void)
+static void sauvegardeMenu(const Catalogue & catalogue) {
+    
+    unsigned short choix;
+
+    char typeTrajet;
+    string villeDepart, villeArrivee;
+    unsigned int indiceDebut, indiceFin;
+
+    unsigned int* indices = new unsigned int[100];
+    unsigned int taille = 0;
+
+    cout << endl << " ======= SAUVEGARDE =======" << endl << endl;
+    cout << "Comment désirez-vous effectuer la sauvegarde ?" << endl;
+    cout << "\t1 - Sans critère de sélection" << endl;
+    cout << "\t2 - Selon le type de trajet" << endl;
+    cout << "\t3 - Selon la ville de départ et/ou d'arrivée" << endl;
+    cout << "\t4 - Selon une sélection de trajets" << endl;
+    cout << "\t5 - Annuler" << endl;
+
+    do {
+        cout << "Entrez votre choix: ";
+        cin >> choix;
+        if(cin.fail() || choix < 1 || choix > 5) {
+            cout << "Choix invalide." << endl;
+            cin.clear();
+        }
+        cin.ignore(10000, '\n');
+    } while(choix < 1 || choix > 5);
+
+    switch(choix) {
+        case 1:
+            {
+                for (unsigned int i=0; i<catalogue.getTaille(); ++i)
+                {
+                    indices[taille++] = i;
+                }
+                sauvegarde(catalogue, indices, taille);
+                break;
+            }
+        case 2:
+            {
+                do
+                {
+                    cout << "Sauvegarder les trajets simples (S) ou composés (C): ";
+                    cin >> typeTrajet;
+                } while (typeTrajet != 'C' && typeTrajet != 'S');
+
+                unsigned int i = 0;
+                MaillonListeChaineeTrajets* maillonAct = catalogue.getPremierMaillon();
+                while(maillonAct != nullptr)
+                {
+                    if (maillonAct->getTrajet()->getTypeTrajet() == typeTrajet)
+                    {
+                        indices[taille++] = i;
+                    }
+                    ++i;
+                    maillonAct = maillonAct->getMaillonSuivant();
+                }
+                sauvegarde(catalogue, indices, taille);
+                break;
+            }
+        case 3:
+            {
+                // Le sujet implique que l'utilisateur doit pouvoir
+                // choisir la ville de départ ET/OU la ville d'arrivée.
+                // Ici, les deux champs sont obligatoires.
+                cout << "Ville de départ: ";
+                cin >> villeDepart;
+                cout << "Ville d'arrivée: ";
+                cin >> villeArrivee;
+
+                unsigned int i = 0;
+                MaillonListeChaineeTrajets* maillonAct = catalogue.getPremierMaillon();
+                while(maillonAct != nullptr)
+                {
+                    if (maillonAct->getTrajet()->getVilleDepart() == villeDepart
+                     && maillonAct->getTrajet()->getVilleArrivee() == villeArrivee)
+                    {
+                        indices[taille++] = i;
+                    }
+                    ++i;
+                    maillonAct = maillonAct->getMaillonSuivant();
+                }
+                sauvegarde(catalogue, indices, taille);
+                break;
+            }
+        case 4:
+            {
+                do
+                {
+                    cout << "Indice de début: ";
+                    cin >> indiceDebut;
+                    cout << "Indice de fin: ";
+                    cin >> indiceFin;
+                } while ((indiceDebut > indiceFin) || (indiceFin > catalogue.getTaille()-1));
+                for (unsigned int i=indiceDebut; i<=indiceFin; ++i)
+                {
+                    indices[taille++] = i;
+                }
+                sauvegarde(catalogue, indices, taille);
+                break;
+            }
+        default: break;
+    }
+
+    delete[] indices;
+}
+
+int main ()
 {
   //Instance unique du Catalogue sur la pile
   Catalogue catalogue;
@@ -450,7 +559,7 @@ int main(void)
       chargement(catalogue);
       break;
       case 8:
-      sauvegarde(catalogue);
+      sauvegardeMenu(catalogue);
       break;
       default:
       break;

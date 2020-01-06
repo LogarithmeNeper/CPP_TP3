@@ -162,6 +162,11 @@ const char* TrajetCompose::getVilleArrivee() const
   }
 }
 
+char TrajetCompose::getTypeTrajet() const
+{
+    return 'C';
+}
+
 void TrajetCompose::sauvegarde(ostream &unFichier) const
 {
     if(!estVide())

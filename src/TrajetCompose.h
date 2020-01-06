@@ -82,6 +82,8 @@ public:
 
   const char* getVilleArrivee() const override;
 
+  char getTypeTrajet() const override;
+
   void sauvegarde(ostream & unFichier) const override;
   
   //-------------------------------------------- Constructeurs - destructeur
