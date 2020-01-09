@@ -315,10 +315,8 @@ static void chargement(Catalogue & catalogue)
         {
           if (!estTrajetCompose)
           {
-              cout << "creation" << endl;
               trajcmp = new TrajetCompose();
           } else {
-              cout << "ajout" << endl;
               catalogue.ajouter(trajcmp);
               ++trajetsCharges;
           }
