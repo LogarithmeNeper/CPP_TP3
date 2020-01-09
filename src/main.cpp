@@ -299,55 +299,57 @@ static void chargement(Catalogue & catalogue)
 
     if (fichier.is_open())
     {
-        string line;
-        string villeDep;
-        string villeArr;
-        string moyTransport;
+      string line;
+      string villeDep;
+      string villeArr;
+      string moyTransport;
 
-        bool estTrajetCompose = false;
-        TrajetCompose* trajcmp;
-        TrajetSimple* trajsmp;
+      bool estTrajetCompose = false;
+      TrajetCompose* trajcmp;
+      TrajetSimple* trajsmp;
 
-        while(!fichier.eof())
+      while(!fichier.eof())
+      {
+        getline(fichier, line, '\n');
+        if(line == "")
         {
-            getline(fichier, line, '\n');
-            if(line == "")
-            {
-                if (!estTrajetCompose)
-                {
-                    trajcmp = new TrajetCompose();
-                } else {
-                    catalogue.ajouter(trajcmp);
-                    ++trajetsCharges;
-                }
-                estTrajetCompose = !estTrajetCompose;
-            }
-            else
-            {
-                if(!estTrajetCompose)
-                {
-                    villeDep = line;
-                    getline(fichier, villeArr, '\n');
-                    getline(fichier, moyTransport, '\n');
-                    trajsmp = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
-                    catalogue.ajouter(trajsmp);
-                    ++trajetsCharges;
-                }
-                else
-                {
-                    villeDep = line;
-                    getline(fichier, villeArr, '\n');
-                    getline(fichier, moyTransport, '\n');
-                    trajsmp = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
-                    trajcmp->ajouter(trajsmp);
-                }
-                
-            }
+          if (!estTrajetCompose)
+          {
+              cout << "creation" << endl;
+              trajcmp = new TrajetCompose();
+          } else {
+              cout << "ajout" << endl;
+              catalogue.ajouter(trajcmp);
+              ++trajetsCharges;
+          }
+          estTrajetCompose = !estTrajetCompose;
         }
+        else
+        {
+          if(!estTrajetCompose)
+          {
+              villeDep = line;
+              getline(fichier, villeArr, '\n');
+              getline(fichier, moyTransport, '\n');
+              trajsmp = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
+              catalogue.ajouter(trajsmp);
+              ++trajetsCharges;
+          }
+          else
+          {
+              villeDep = line;
+              getline(fichier, villeArr, '\n');
+              getline(fichier, moyTransport, '\n');
+              trajsmp = new TrajetSimple(villeDep.c_str(),villeArr.c_str(),moyTransport.c_str());
+              trajcmp->ajouter(trajsmp);
+          }
+        }
+      }
+      delete trajcmp;
     }
     else
     {
-        cout << "Impossible d'ouvrir le fichier." << endl;
+      cout << "Impossible d'ouvrir le fichier." << endl;
     }
     
     fichier.close();
@@ -376,7 +378,6 @@ static void sauvegarde(const Catalogue & catalogue, const unsigned int* indices,
 
         if (fichier.is_open())
         {
-            cout << "Taille: " << taille << endl;
             for (unsigned int i=0; i<taille; ++i)
             {
                 MaillonListeChaineeTrajets* maillonAct = catalogue.get(indices[i]);
@@ -393,7 +394,7 @@ static void sauvegarde(const Catalogue & catalogue, const unsigned int* indices,
 }
 
 static void sauvegardeMenu(const Catalogue & catalogue) {
-    
+
     unsigned short choix;
 
     char typeTrajet;
