@@ -3,7 +3,11 @@ Trajet  -  Une abstraction de trajet
 -------------------
 début                : 20/11/2019
 copyright            : (C) 2019 par Charles Javerliat
-e-mail               : charles.javerliat@insa-lyon.fr, pierre.sibut-bourde@insa-lyon.fr
+                       Pierre Sibut-Bourde
+                       Charly Poirier
+e-mail               : charles.javerliat@insa-lyon.fr
+                       pierre.sibut-bourde@insa-lyon.fr
+                       charly.poirier@insa-lyon.fr
 *************************************************************************/
 
 //---------- Interface de la classe Trajet (fichier Trajet.h) ----------------
